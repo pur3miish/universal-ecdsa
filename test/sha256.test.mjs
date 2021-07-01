@@ -1,8 +1,13 @@
-import { deepStrictEqual } from 'assert'
+import { deepStrictEqual, rejects } from 'assert'
+import crypto from 'crypto'
 import sha256 from '../public/sha256.js'
 
 export default tests => {
   tests.add('Sha256', async () => {
+    global.window = true
+    global.crypto = {
+      subtle: crypto.webcrypto.subtle
+    }
     const array = Uint8Array.from([
       84, 104, 101, 32, 113, 117, 105, 99, 107, 32, 98, 114, 111, 119, 110, 32,
       102, 111, 120, 32, 106, 117, 109, 112, 115, 32, 111, 118, 101, 114, 32,
@@ -16,5 +21,8 @@ export default tests => {
     const data = await sha256(array)
 
     deepStrictEqual(data, expected, 'Expected sha256 value')
+    global.window = undefined
+    global.crypt = undefined
+    rejects(() => sha256(''), 'extected rejection')
   })
 }

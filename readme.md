@@ -17,6 +17,8 @@ npm i universal-ecdsa
 - Node.js `^12.20.1 || >= 13.2`
 - Browser `defaults, no IE 11`
 
+_You will need Node +15 web crypto for passing test._
+
 # API
 
 - [function get_public_key](#function-get_public_key)
