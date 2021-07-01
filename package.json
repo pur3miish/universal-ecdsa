@@ -1,0 +1,62 @@
+{
+  "name": "universal-ecdsa",
+  "version": "1.0.0",
+  "description": "secp256k1 ECDSA for universal JS",
+  "main": "public/index.js",
+  "engines": {
+    "node": "^12.20.1 || >= 13.2"
+  },
+  "scripts": {
+    "jsdoc": "jsdoc-md",
+    "test:api": "coverage-node test/index.test.mjs"
+  },
+  "exports": {
+    ".": {
+      "import": "./public/index.mjs",
+      "require": "./public/index.js"
+    },
+    "./public/": "./public/",
+    "./package": "./package.json",
+    "./package.json": "./package.json"
+  },
+  "keywords": [
+    "ECDSA",
+    "universal",
+    "blockchain",
+    "digital",
+    "signature",
+    "ecc",
+    "elliptic",
+    "curve",
+    "cryptography",
+    "bitcoin",
+    "secp256k1",
+    "javascript",
+    "WASM"
+  ],
+  "browserslist": [
+    "defaults",
+    "not IE 11"
+  ],
+  "files": [
+    "public",
+    "private"
+  ],
+  "author": "pur3miish",
+  "license": "MIT",
+  "devDependencies": {
+    "coverage-node": "^5.0.1",
+    "eslint": "^7.16.0",
+    "eslint-config-env": "^21.0.0",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-plugin-compat": "^3.9.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jsdoc": "^35.4.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^3.3.0",
+    "hard-rejection": "^2.1.0",
+    "jsdoc-md": "^11.0.0",
+    "prettier": "^2.2.1",
+    "test-director": "^6.0.0"
+  }
+}
