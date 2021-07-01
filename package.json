@@ -11,7 +11,7 @@
     "prepare:jsdoc": "jsdoc-md",
     "prepare:prettier": "prettier --write readme.md",
     "test": "npm run test:eslint && npm run test:prettier && npm run test:api",
-    "test:api": "coverage-node -r hard-rejection/register test/index.test.mjs",
+    "test:api": "coverage-node test/index.test.mjs",
     "test:eslint": "eslint .",
     "test:prettier": "prettier -c .",
     "prepublishOnly": "npm test"
@@ -22,7 +22,7 @@
       "require": "./public/index.js"
     },
     "./public/": "./public/",
-    "./package": "./package.json",
+    "./package": "./packcage.json",
     "./package.json": "./package.json"
   },
   "keywords": [
@@ -60,7 +60,6 @@
     "eslint-plugin-jsdoc": "^35.4.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^3.3.0",
-    "hard-rejection": "^2.1.0",
     "jsdoc-md": "^11.0.0",
     "prettier": "^2.2.1",
     "test-director": "^6.0.0"
