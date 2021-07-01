@@ -2,4 +2,6 @@
 
 ## 1.0.0
 
+### Major
+
 Initial Release
