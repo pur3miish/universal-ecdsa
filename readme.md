@@ -1,4 +1,4 @@
-![secp256k1 logo](https://raw.githubusercontent.com/pur3miish/universal-ecdsa/main/static/secp256k1.svg)
+![secp256k1 logo](https://raw.githubusercontent.com/pur3miish/universal-ecdsa/master/static/secp256k1.svg)
 
 # Universal ECDSA
 
