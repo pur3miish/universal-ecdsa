@@ -48,7 +48,8 @@ const { WASM } = require('./ecdsa.json')
  * @example <caption>Wasm _Z9sign_hashv</caption>
  * ```js
  * async function test() {
- *   const { _Z7get_ptri, set_bytes, extract_bytes, _Z9sign_hashv } = await init_wasm()
+ *   const { _Z7get_ptri, set_bytes, extract_bytes, _Z9sign_hashv } =
+ *     await init_wasm()
  *   const sha256_hex = await sha256(hex)
  *   set_bytes(_Z7get_ptri(2), private_key)
  *   set_bytes(_Z7get_ptri(3), sha256_hex)

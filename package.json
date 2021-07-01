@@ -7,8 +7,14 @@
     "node": "^12.20.1 || >= 13.2"
   },
   "scripts": {
-    "jsdoc": "jsdoc-md",
-    "test:api": "coverage-node test/index.test.mjs"
+    "prepare": "npm run prepare:jsdoc && npm run prepare:prettier",
+    "prepare:jsdoc": "jsdoc-md",
+    "prepare:prettier": "prettier --write readme.md",
+    "test": "npm run test:eslint && npm run test:prettier && npm run test:api",
+    "test:api": "coverage-node -r hard-rejection/register test/index.test.mjs",
+    "test:eslint": "eslint .",
+    "test:prettier": "prettier -c .",
+    "prepublishOnly": "npm test"
   },
   "exports": {
     ".": {

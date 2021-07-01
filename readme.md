@@ -2,7 +2,7 @@
 
 # Universal ECDSA
 
-[![NPM Package](https://img.shields.io/npm/v/eos-ecc.svg)](https://www.npmjs.org/package/eos-ecc) [![CI status]()](https://github.com/pur3miish/eos-ecc/actions) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/pur3miish/eos-ecc/blob/main/LICENSE)
+[![NPM Package](https://img.shields.io/npm/v/universal-ecdsa.svg)](https://www.npmjs.org/package/universal-ecdsa) [![CI status](https://github.com/pur3miish/universal-ecdsa/workflows/CI/badge.svg)](https://github.com/pur3miish/universal-ecdsa/actions) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/pur3miish/eos-ecc/blob/main/LICENSE)
 
 A [Universal](https://en.wikipedia.org/wiki/Isomorphic_JavaScript) JavaScript [Elliptic Curve Digital Signature Algorithm](https://en.bitcoin.it/wiki/Elliptic_Curve_Digital_Signature_Algorithm) (ECDSA) for the Koblitz secp256k1 curve.
 
