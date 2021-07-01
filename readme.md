@@ -40,13 +40,13 @@ Generates a compressed public key for the `secp256k1` curve.
 _Ways to `import`._
 
 > ```js
-> import get_public_key from 'universal-ecdsa'
+> import { get_public_key } from 'universal-ecdsa'
 > ```
 
 _Ways to `require`._
 
 > ```js
-> const get_public_key = require('universal-ecdsa')
+> const { get_public_key } = require('universal-ecdsa')
 > ```
 
 _Usage `get_public_key`._
@@ -79,13 +79,13 @@ Universal sha256 message digest helper function.
 _Ways to `import`._
 
 > ```js
-> import sha256 from 'universal-ecdsa'
+> import { sha256 } from 'universal-ecdsa'
 > ```
 
 _Ways to `require`._
 
 > ```js
-> const sha256 = require('universal-ecdsa')
+> const { sha256 } = require('universal-ecdsa')
 > ```
 
 _Usage `sha256` in node._
@@ -119,13 +119,13 @@ Generates a digital signature on the secp256k1 Koblitz curve.
 _Ways to `import`._
 
 > ```js
-> import sign from 'universal-ecdsa'
+> import { sign } from 'universal-ecdsa'
 > ```
 
 _Ways to `require`._
 
 > ```js
-> const sign = require('universal-ecdsa')
+> const { sign } = require('universal-ecdsa')
 > ```
 
 _Usage `sign`._

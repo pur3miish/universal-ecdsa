@@ -13,11 +13,11 @@ const sha256_hash = require('./sha256.js')
  * @returns {Signature} Digital signature object containing `r` and `s` values.
  * @example <caption>Ways to `import`.</caption>
  * ```js
- * import sign from 'universal-ecdsa'
+ * import { sign } from 'universal-ecdsa'
  * ```
  * @example <caption>Ways to `require`.</caption>
  * ```js
- * const sign = require('universal-ecdsa')
+ * const { sign } = require('universal-ecdsa')
  * ```
  *  @example <caption>Usage `sign`.</caption>
  * ```js

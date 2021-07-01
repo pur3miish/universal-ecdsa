@@ -10,11 +10,11 @@ const init_wasm = require('../private/init_wasm.js')
  * @returns {Uint8Array} Public key.
  * @example <caption>Ways to `import`.</caption>
  * ```js
- * import get_public_key from 'universal-ecdsa'
+ * import { get_public_key } from 'universal-ecdsa'
  * ```
  * @example <caption>Ways to `require`.</caption>
  * ```js
- * const get_public_key = require('universal-ecdsa')
+ * const { get_public_key } = require('universal-ecdsa')
  * ```
  * @example <caption>Usage `get_public_key`.</caption>
  * ```js

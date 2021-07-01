@@ -8,11 +8,11 @@
  * @returns {Uint8Array} Message digest.
  * @example <caption>Ways to `import`.</caption>
  * ```js
- * import sha256 from 'universal-ecdsa'
+ * import { sha256 } from 'universal-ecdsa'
  * ```
  * @example <caption>Ways to `require`.</caption>
  * ```js
- * const sha256 = require('universal-ecdsa')
+ * const { sha256 } = require('universal-ecdsa')
  * ```
  * @example <caption>Usage `sha256` in node.</caption>
  * ```js
