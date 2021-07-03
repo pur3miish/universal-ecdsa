@@ -1,6 +1,6 @@
 {
   "name": "universal-ecdsa",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A universal JavaScript Elliptic Curve Digital Signature Algorithm (ECDSA) for the Koblitz secp256k1 curve.",
   "main": "public/index.js",
   "engines": {
