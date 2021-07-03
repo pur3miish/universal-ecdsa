@@ -8,6 +8,8 @@ unsigned char public_key[33] = {};
 unsigned char sha256_data[32] = {};
 unsigned char r[32];
 unsigned char s[32];
+unsigned char racid[1] = {0};
+
 // constants used in the digital signature.
 static bigint zero, one,two, mod, x, y, n, b, a, h, n_half, two_fifty_six;
 static char buf[65536];
@@ -23,14 +25,14 @@ int is_odd(bigint* k) {
     return buf[strlen(buf) - 1] & 1;
 }
 // Modulus operation.
-void get_mod(bigint& dst, bigint& val, bigint& mod) 
+void get_mod(bigint& dst, bigint& val, bigint& mod)
 {
     bigint_mod(&dst, &val, &mod);
     bigint_add(&dst, &dst, &mod);
     bigint_mod(&dst, &dst, &mod);
 };
 // Modular multiplicative inverse.
-void mul_inverse(bigint& dst, bigint& val, bigint& mod) 
+void mul_inverse(bigint& dst, bigint& val, bigint& mod)
 {
     bigint a, b, b0, t, q, x0, x1;
     bigint_init(&a);
@@ -45,14 +47,14 @@ void mul_inverse(bigint& dst, bigint& val, bigint& mod)
     bigint_cpy(&b0, &b); // Set b0 = mod.
     bigint_from_int(&x0, 0);
     bigint_from_int(&x1, 1);
-    
+
     if (bigint_cmp(&mod, &one) == 0) bigint_from_int(&dst, 1);
     else {
         while (bigint_cmp(&a, &one) > 0) {
             bigint_div(&q, &a, &b);
             bigint_cpy(&t, &b);
             bigint_mod(&dst, &a, &b);
-            bigint_cpy(&b, &dst);            
+            bigint_cpy(&b, &dst);
             bigint_cpy(&a, &t);
             bigint_cpy(&t, &x0);
             bigint_mul(&q, &x0, &q);
@@ -123,7 +125,7 @@ void calc_new_point(coordinates& R, coordinates& Q, coordinates& P, bigint& λ)
     bigint_sub(&R.x, &R.x, &P.x);
     bigint_sub(&R.x, &R.x, &Q.x);
     get_mod(R.x, R.x, mod);
-    
+
     bigint_sub(&R.y, &P.x, &R.x);
     bigint_mul(&R.y, &R.y, &λ);
     get_mod(R.y, R.y, mod);
@@ -131,14 +133,14 @@ void calc_new_point(coordinates& R, coordinates& Q, coordinates& P, bigint& λ)
     get_mod(R.y, R.y, mod);
 }
 // ECC point addition.
-void add(coordinates& R, coordinates& Q, coordinates& P) 
+void add(coordinates& R, coordinates& Q, coordinates& P)
 {
     bigint x1, y1;
     bigint_init(&x1);
     bigint_init(&y1);
     bigint_sub(&x1, &P.x, &Q.x);
     mul_inverse(x1, x1, mod);
-    
+
     bigint_sub(&y1, &P.y, &Q.y);
     get_mod(y1, y1, mod);
     bigint_mul(&y1, &y1, &x1);
@@ -156,7 +158,7 @@ coordinates add(coordinates& Q, coordinates& P) {
 }
 
 // ECC point doubling.
-void dbl(coordinates& R, coordinates& G) 
+void dbl(coordinates& R, coordinates& G)
 {
     bigint numerator, three, denominator;
     bigint_init(&three);
@@ -168,7 +170,7 @@ void dbl(coordinates& R, coordinates& G)
     get_mod(numerator, numerator, mod);
     bigint_mul(&numerator, &numerator, &three);
     get_mod(numerator, numerator, mod);
-    
+
     bigint_mul(&denominator, &two, &G.y);
     mul_inverse(denominator, denominator, mod);
 
@@ -198,14 +200,14 @@ coordinates double_and_add(coordinates G, bigint& k) {
     }
 }
 // checks is the coordinate Q is point at {0,0}.
-int isInfinity(coordinates Q) 
+int isInfinity(coordinates Q)
 {
     return bigint_cmp(&Q.x, &zero) == 0 && bigint_cmp(&Q.y, &zero) == 0 ? 1 : 0;
 }
 // performs a sha256 message digest on msg.
-void digest(uint8_t msg[], uint8_t* msg_digest, size_t msg_length) 
+void digest(uint8_t msg[], uint8_t* msg_digest, size_t msg_length)
 {
-    sha256_t ctx;    
+    sha256_t ctx;
     sha256_init (&ctx);
     sha256_update (&ctx, msg, msg_length);
     sha256_final (&ctx, msg_digest);
@@ -266,8 +268,12 @@ int validate_signature(bigint& T, bigint& e, bigint& d) {
     bigint val;
     bigint_init(&val);
     bigint_cpy(&val, &T);
-    coordinates Q = double_and_add(G, val); 
+    coordinates Q = double_and_add(G, val);
     if (isInfinity(Q)) return 1;
+
+    // please see https://bitcoin.stackexchange.com/questions/83035/how-to-determine-first-byte-recovery-id-for-signatures-message-signing
+    // R_x > n set recover id to 2.
+    if (bigint_cmp(&Q.x, &n) > 0) racid[0] = 2;
 
     bigint_to_unsigned_char((unsigned char*)r, Q.x); // set r value.
     mul_inverse(val, T, n);
@@ -275,9 +281,21 @@ int validate_signature(bigint& T, bigint& e, bigint& d) {
     bigint_add(&Q.x, &Q.x, &e);
     bigint_mul(&val, &val, &Q.x);
     get_mod(val, val, n); // val == s coordinate
-    
-    // Enforce low S values, see BIP62.    
-    if (bigint_cmp(&val, &n_half) > 0) bigint_sub(&val, &n, &val);
+
+
+    // if y coordinate is odd then: racid OR 1 
+    if (is_odd(&Q.y)) racid[0] = racid[0] | 1;
+
+    // Enforce low S values, see BIP62.
+    if (bigint_cmp(&val, &n_half) > 0) {
+        bigint_sub(&val, &n, &val);
+        // XOR recovery id
+        racid[0] = racid[0] ^ 1;
+    }
+
+
+    // if x coordinate is larger than order n
+
     bigint_to_unsigned_char((unsigned char*)s, val); // set s value.
     bigint_free(&val);
     return 0;
@@ -287,10 +305,10 @@ int validate_signature(bigint& T, bigint& e, bigint& d) {
 void deterministically_generate_k(uint8_t* hash, uint8_t* private_key, int nonce = 0) {
     uint8_t msg_digest[32];
     if (nonce) {
-        int nhsh_len = 32 + nonce; 
+        int nhsh_len = 32 + nonce;
         uint8_t hash_nonce[nhsh_len];
         for (int i = 0; i < nhsh_len; i++) hash_nonce[i] = i < 32 ? hash[i] : 0;
-        digest(hash_nonce, msg_digest, nhsh_len);    
+        digest(hash_nonce, msg_digest, nhsh_len);
     } else for (int i=0; i < 32; i++) msg_digest[i] = hash[i];
 
     uint8_t x[32];
@@ -314,7 +332,7 @@ void deterministically_generate_k(uint8_t* hash, uint8_t* private_key, int nonce
     hmac_sha256(buf_E, v, 32, buff_D, 32);
     // Step F
     uint8_t buf_F[32];
-    
+
     uint8_t buf_f[97];
     for (int i=0; i < 32; i++) buf_f[i] = buf_E[i];
     buf_f[32] = 1;

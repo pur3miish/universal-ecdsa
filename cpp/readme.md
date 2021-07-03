@@ -74,3 +74,6 @@ These are some resources for understanding ECC.
 9. https://rosettacode.org/wiki/Category:C%2B%2B
 10. https://hacks.mozilla.org/2019/03/standardizing-wasi-a-webassembly-system-interface/
 11. https://en.bitcoin.it/wiki/Elliptic_Curve_Digital_Signature_Algorithm
+12. https://github.com/fivepiece/sign-verify-message/blob/master/signverifymessage.md#encoding-of-a-recoverable-signature
+13. https://www.secg.org/sec1-v2.pdf
+14. https://bitcoin.stackexchange.com/questions/83035/how-to-determine-first-byte-recovery-id-for-signatures-message-signing

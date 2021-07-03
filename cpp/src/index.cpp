@@ -17,8 +17,11 @@ unsigned char *get_ptr(int x) {
         case 3:
             ptr = sha256_data;
         break;
-        default:
+        case 4:
             ptr = public_key;
+        break;
+        default:
+            ptr = racid;
         break;
     }
     return ptr;
@@ -31,16 +34,17 @@ void sign_hash() {
     terminate_secp256k1();
 }
 
-// Genrates public key (x-coordinate) from private key.
+// Genrates compressed public key (x-coordinate) from private key.
 void get_public_key() {
     initialize_secp256k1();
     bigint num;
     bigint_init(&num);
     array_to_bigint(num, private_key, 32);
+
+    if (bigint_cmp(&n, &num) < 0) return;
     coordinates G = { x,y };
     coordinates R = double_and_add(G, num);
     bigint_to_unsigned_char(public_key, R.x, 32);
     terminate_secp256k1();
     bigint_free(&num);
 }
-

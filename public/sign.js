@@ -42,8 +42,9 @@ async function sign({ private_key, data }) {
 
   const r = extract_bytes(_Z7get_ptri(0), 32)
   const s = extract_bytes(_Z7get_ptri(1), 32)
+  const [racid] = extract_bytes(_Z7get_ptri(5), 1)
 
-  return { r, s }
+  return { r, s, racid }
 }
 
 module.exports = sign
