@@ -1,4 +1,4 @@
-import { deepStrictEqual } from 'assert'
+import { deepStrictEqual, rejects } from 'assert'
 import get_public_key from '../public/get_public_key.js'
 
 export default tests => {
@@ -22,5 +22,9 @@ export default tests => {
   tests.add('Public key from private key', async () => {
     const pub_key = await get_public_key(private_key)
     deepStrictEqual(pub_key, public_key, 'Expected public key from private key')
+  })
+  tests.add('Range error public key from private key', async () => {
+    const pub_key = new Uint8Array(32).fill(255)
+    rejects(async () => get_public_key(pub_key), 'Expected throw')
   })
 }
