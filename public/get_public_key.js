@@ -33,12 +33,11 @@ async function get_public_key(private_key) {
 
   set_bytes(_Z7get_ptri(2), private_key)
   _Z14get_public_keyv()
-  const pk = Uint8Array.from([2, ...extract_bytes(_Z7get_ptri(4), 32)])
-  if (!pk.slice(1, 33).filter(i => !!i).length)
-    throw new RangeError('Invalid private key')
+
+  const pk = Uint8Array.from(extract_bytes(_Z7get_ptri(4), 33))
+
+  if (!pk[0]) throw new RangeError('Invalid private key')
   return pk
 }
-
-get_public_key(new Uint8Array(32).fill(240))
 
 module.exports = get_public_key

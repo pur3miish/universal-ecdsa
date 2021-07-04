@@ -283,7 +283,7 @@ int validate_signature(bigint& T, bigint& e, bigint& d) {
     get_mod(val, val, n); // val == s coordinate
 
 
-    // if y coordinate is odd then: racid OR 1 
+    // if y coordinate is odd then: racid OR 1
     if (is_odd(&Q.y)) racid[0] = racid[0] | 1;
 
     // Enforce low S values, see BIP62.

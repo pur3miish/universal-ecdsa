@@ -44,7 +44,12 @@ void get_public_key() {
     if (bigint_cmp(&n, &num) < 0) return;
     coordinates G = { x,y };
     coordinates R = double_and_add(G, num);
-    bigint_to_unsigned_char(public_key, R.x, 32);
+    // if y coordinate is odd prefix it with 3 else 2.
+    if (is_odd(&R.y)) public_key[0] = 3;
+    else public_key[0] = 2;
+
+    unsigned char* x = &public_key[1];
+    bigint_to_unsigned_char(x, R.x, 32);
     terminate_secp256k1();
     bigint_free(&num);
 }
