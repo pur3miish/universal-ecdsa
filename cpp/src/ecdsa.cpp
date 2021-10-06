@@ -2,7 +2,6 @@
 #include "hmac-sha256/hmac-sha256.h"
 #include "sha256/sha256.h"
 
-
 unsigned char private_key[32] = {};
 unsigned char public_key[33] = {};
 unsigned char sha256_data[32] = {};
@@ -271,9 +270,13 @@ int validate_signature(bigint& T, bigint& e, bigint& d) {
     coordinates Q = double_and_add(G, val);
     if (isInfinity(Q)) return 1;
 
-    // please see https://bitcoin.stackexchange.com/questions/83035/how-to-determine-first-byte-recovery-id-for-signatures-message-signing
+    /*  racid calcualted with the formula
+    *   racid = (R.X > curve.N) ? 2 : 0) | R.Y.IsEven ? 0 : 1);
+    *   Please see https://bitcoin.stackexchange.com/questions/83035/how-to-determine-first-byte-recovery-id-for-signatures-message-signing
+    */
+    int v = 0;
     // R_x > n set recover id to 2.
-    if (bigint_cmp(&Q.x, &n) > 0) racid[0] = 2;
+    if (bigint_cmp(&Q.x, &n) > 0) v = 2;
 
     bigint_to_unsigned_char((unsigned char*)r, Q.x); // set r value.
     mul_inverse(val, T, n);
@@ -284,7 +287,8 @@ int validate_signature(bigint& T, bigint& e, bigint& d) {
 
 
     // if y coordinate is odd then: racid OR 1
-    if (is_odd(&Q.y)) racid[0] = racid[0] | 1;
+    if (is_odd(&Q.y)) racid[0] = 1 | v;
+    else racid[0] = 0 | v;
 
     // Enforce low S values, see BIP62.
     if (bigint_cmp(&val, &n_half) > 0) {

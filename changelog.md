@@ -1,6 +1,10 @@
 # universal-ecdsa changelog
 
+## 1.1.2
+
 ### Patch
+
+- racid bug fix.
 
 # 1.1.1
 
