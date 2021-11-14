@@ -1,5 +1,9 @@
 # universal-ecdsa changelog
 
+## 1.1.3
+
+- Equality issue for [deterministically_generate_k](cpp/src/ecdsa.cpp) for {r,s} values fixed (start with 0x80).
+
 ## 1.1.2
 
 ### Patch

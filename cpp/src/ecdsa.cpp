@@ -2,9 +2,10 @@
 #include "hmac-sha256/hmac-sha256.h"
 #include "sha256/sha256.h"
 
-unsigned char private_key[32] = {};
+unsigned char private_key[32] = {171,209,35,208,126,4,237,27,221,89,230,143,1,241,209,116,11,185,87,240,82,81,52,97,243,122,3,93,4,243,118,38};
 unsigned char public_key[33] = {};
-unsigned char sha256_data[32] = {};
+unsigned char sha256_data[32] = {246,191,190,20,147,102,155,145,76,232,223,122,115,158,42,60,30,180,186,182,192,80,140,189,17,114,37,130,161,172,34,174};
+// unsigned char sha256_data[32] = {185,190,157,59,12,50,214,89,69,55,55,124,110,205,90,216,121,117,106,16,116,0,183,5,103,166,180,175,165,18,142,230};
 unsigned char r[32];
 unsigned char s[32];
 unsigned char racid[1] = {0};
@@ -18,6 +19,7 @@ typedef struct {
     bigint x;
     bigint y;
 } coordinates;
+
 // Determines if big integer is odd number.
 int is_odd(bigint* k) {
     bigint_write(buf, sizeof(buf), k);
@@ -30,6 +32,7 @@ void get_mod(bigint& dst, bigint& val, bigint& mod)
     bigint_add(&dst, &dst, &mod);
     bigint_mod(&dst, &dst, &mod);
 };
+
 // Modular multiplicative inverse.
 void mul_inverse(bigint& dst, bigint& val, bigint& mod)
 {
@@ -73,6 +76,7 @@ void mul_inverse(bigint& dst, bigint& val, bigint& mod)
     bigint_free(&x0);
     bigint_free(&x1);
 }
+
 // Pre allocates memory and sets all the constant for secp256k1 signature generation.
 void initialize_secp256k1() {
     bigint_init(&zero);
@@ -181,11 +185,13 @@ void dbl(coordinates& R, coordinates& G)
     bigint_free(&denominator);
     bigint_free(&three);
 }
+
 coordinates dbl(coordinates& G) {
     coordinates R = {};
     dbl(R, G);
     return R;
 }
+
 // Recursive function for ECC point multiplication.
 coordinates double_and_add(coordinates G, bigint& k) {
     if (bigint_cmp(&k, &one) == 0) return G;
@@ -236,7 +242,7 @@ void array_to_bigint(bigint &dst, uint8_t* arr, size_t length) {
     bigint_free(&tfs);
 }
 
-// Convert a bigint to unsiged char array.
+// Convert a bigint to unsigned char array.
 void bigint_to_unsigned_char(unsigned char* dst, bigint& num, size_t length = 32) {
     bigint val, acc;
     bigint_init(&acc);
@@ -270,9 +276,10 @@ int validate_signature(bigint& T, bigint& e, bigint& d) {
     coordinates Q = double_and_add(G, val);
     if (isInfinity(Q)) return 1;
 
-    /*  racid calcualted with the formula
-    *   racid = (R.X > curve.N) ? 2 : 0) | R.Y.IsEven ? 0 : 1);
-    *   Please see https://bitcoin.stackexchange.com/questions/83035/how-to-determine-first-byte-recovery-id-for-signatures-message-signing
+   /*
+    *  racid calcualted with the formula
+    *  racid = (R.X > curve.N) ? 2 : 0) | R.Y.IsEven ? 0 : 1);
+    *  Please see https://bitcoin.stackexchange.com/questions/83035/how-to-determine-first-byte-recovery-id-for-signatures-message-signing
     */
     int v = 0;
     // R_x > n set recover id to 2.
@@ -285,21 +292,17 @@ int validate_signature(bigint& T, bigint& e, bigint& d) {
     bigint_mul(&val, &val, &Q.x);
     get_mod(val, val, n); // val == s coordinate
 
-
     // if y coordinate is odd then: racid OR 1
     if (is_odd(&Q.y)) racid[0] = 1 | v;
     else racid[0] = 0 | v;
 
     // Enforce low S values, see BIP62.
+    // if x coordinate is larger than order n
     if (bigint_cmp(&val, &n_half) > 0) {
         bigint_sub(&val, &n, &val);
         // XOR recovery id
         racid[0] = racid[0] ^ 1;
     }
-
-
-    // if x coordinate is larger than order n
-
     bigint_to_unsigned_char((unsigned char*)s, val); // set s value.
     bigint_free(&val);
     return 0;
@@ -336,7 +339,6 @@ void deterministically_generate_k(uint8_t* hash, uint8_t* private_key, int nonce
     hmac_sha256(buf_E, v, 32, buff_D, 32);
     // Step F
     uint8_t buf_F[32];
-
     uint8_t buf_f[97];
     for (int i=0; i < 32; i++) buf_f[i] = buf_E[i];
     buf_f[32] = 1;
@@ -350,12 +352,10 @@ void deterministically_generate_k(uint8_t* hash, uint8_t* private_key, int nonce
     // Step H2b
     uint8_t buf_h2b[32];
     hmac_sha256(buf_h2b, buf_G, 32, buf_F, 32);
-
     bigint T, e, d;
     bigint_init(&T);
     bigint_init(&e);
     bigint_init(&d);
-
     array_to_bigint(T, buf_h2b, 32);
     array_to_bigint(e, hash, 32);
     array_to_bigint(d, x, 32);
@@ -380,5 +380,5 @@ void deterministically_generate_k(uint8_t* hash, uint8_t* private_key, int nonce
     bigint_free(&e);
     bigint_free(&d);
 
-    if ((r[0] > 0x80) || (s[0] > 0x80)) deterministically_generate_k(hash, private_key, ++nonce);
+    if ((r[0] >= 0x80) || (s[0] >= 0x80)) deterministically_generate_k(hash, private_key, ++nonce);
 }

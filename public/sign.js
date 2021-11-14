@@ -35,7 +35,6 @@ async function sign({ private_key, data }) {
   const { _Z9sign_hashv, _Z7get_ptri, set_bytes, extract_bytes } =
     await init_wasm()
   const hash = await sha256_hash(data)
-
   set_bytes(_Z7get_ptri(2), private_key)
   set_bytes(_Z7get_ptri(3), hash)
   _Z9sign_hashv()
