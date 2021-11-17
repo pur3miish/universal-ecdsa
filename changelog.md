@@ -9,6 +9,7 @@
 ### Patch
 
 - racid bug fix.
+- Closes [#2](https://github.com/pur3miish/universal-ecdsa/issues/2).
 
 # 1.1.1
 
