@@ -10,7 +10,7 @@ Info
 
 _The Web Assembly binary file `esdsa.json` that is consumed by the JavaScript environments is compiled from C/C++, see [cpp/readme.md](https://github.com/pur3miish/universal-ecdsa/tree/master/cpp)._
 
-- ~28 kB _(minifeied + gzipped) to bundle_
+- \~28 kB _(minifeied + gzipped) to bundle_
 
 # Setup
 
